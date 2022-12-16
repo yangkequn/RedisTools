@@ -12,12 +12,12 @@ def connect_redis(conn_dict):
 
 
 def conn_string_type(string):
-    format = '<host>:<port>/<db>'
     try:
         host, portdb = string.split(':')
         port, db = portdb.split('/')
         db = int(db)
     except ValueError:
+        format = '<host>:<port>/<db>'
         raise argparse.ArgumentTypeError(
             'incorrect format, should be: %s' % format)
     return {'host': host, 'port': port, 'db': db}
@@ -26,7 +26,6 @@ def conn_string_type(string):
 def migrate_redis(source, destination):
     src = connect_redis(source)
     dst = connect_redis(destination)
-    dst.set("test", "test")
     for key in tqdm(src.keys('*')):
         type_of_value = src.type(key)
         desPipe = dst.pipeline()
